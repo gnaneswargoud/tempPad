@@ -1,0 +1,672 @@
+/* ============================================================
+   TempPad — Main Stylesheet
+   ============================================================
+   Responsive, light/dark mode, minimal and clean design.
+   
+   Theme system:
+   - Respects prefers-color-scheme by default
+   - Manual toggle overrides stored in localStorage
+   - CSS custom properties (variables) make theming easy
+   ============================================================ */
+
+/* --- CSS Reset & Base --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- Theme Variables --- */
+:root {
+    /* Light theme (default) */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-tertiary: #e8e8e8;
+    --text-primary: #1a1a1a;
+    --text-secondary: #555555;
+    --text-muted: #888888;
+    --border-color: #dddddd;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-light: #dbeafe;
+    --error: #dc2626;
+    --error-bg: #fef2f2;
+    --success: #16a34a;
+    --success-bg: #f0fdf4;
+    --warning: #d97706;
+    --warning-bg: #fffbeb;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --radius: 6px;
+    --radius-lg: 10px;
+    --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --transition: 0.2s ease;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-tertiary: #0f3460;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --text-muted: #707070;
+    --border-color: #333355;
+    --accent: #60a5fa;
+    --accent-hover: #93c5fd;
+    --accent-light: #1e3a5f;
+    --error: #f87171;
+    --error-bg: #3b1515;
+    --success: #4ade80;
+    --success-bg: #15302a;
+    --warning: #fbbf24;
+    --warning-bg: #3b2f10;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Base Styles --- */
+html {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    transition: background var(--transition), color var(--transition);
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* --- Utility Classes --- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ============================================================
+   LANDING PAGE
+   ============================================================ */
+
+.landing-container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.landing-logo {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+
+.landing-tagline {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    line-height: 1.5;
+}
+
+/* --- Create Form --- */
+.create-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.create-input {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-family: var(--font-mono);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color var(--transition);
+}
+
+.create-input:focus {
+    border-color: var(--accent);
+}
+
+.create-input.invalid {
+    border-color: var(--error);
+}
+
+.create-btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background var(--transition);
+    white-space: nowrap;
+}
+
+.create-btn:hover {
+    background: var(--accent-hover);
+}
+
+.create-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- Validation message --- */
+.validation-msg {
+    font-size: 0.85rem;
+    min-height: 1.4em;
+    margin-bottom: 8px;
+    transition: color var(--transition);
+}
+
+.validation-msg.error {
+    color: var(--error);
+}
+
+.validation-msg.success {
+    color: var(--success);
+}
+
+/* --- Info box --- */
+.info-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    text-align: left;
+    margin-top: 32px;
+}
+
+.info-box h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.info-box ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-box li {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    padding: 4px 0;
+    padding-left: 20px;
+    position: relative;
+}
+
+.info-box li::before {
+    content: '•';
+    position: absolute;
+    left: 4px;
+    color: var(--accent);
+    font-weight: bold;
+}
+
+/* --- Format hint --- */
+.format-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: left;
+    margin-bottom: 16px;
+}
+
+/* ============================================================
+   EDITOR PAGE
+   ============================================================ */
+
+/* --- Top Bar --- */
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.topbar-logo {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    text-decoration: none;
+}
+
+.topbar-logo:hover {
+    text-decoration: none;
+}
+
+.topbar-filename {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    padding: 4px 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.topbar-spacer {
+    flex: 1;
+}
+
+.topbar-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* --- Buttons (shared styles) --- */
+.btn {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    background: var(--bg-tertiary);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+}
+
+/* --- Theme toggle --- */
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    transition: background var(--transition);
+}
+
+.theme-toggle:hover {
+    background: var(--bg-tertiary);
+}
+
+/* --- Editor Area --- */
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 52px - 36px); /* viewport - topbar - statusbar */
+}
+
+.editor-notice {
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    color: var(--warning);
+    background: var(--warning-bg);
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.editor-textarea {
+    flex: 1;
+    width: 100%;
+    padding: 16px;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    border: none;
+    outline: none;
+    resize: none;
+    tab-size: 4;
+}
+
+.editor-textarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* --- Action Bar (between textarea and status bar) --- */
+.action-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.action-bar-spacer {
+    flex: 1;
+}
+
+/* --- Status Bar --- */
+.statusbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 6px 16px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+}
+
+.statusbar-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.statusbar .save-status {
+    font-weight: 600;
+}
+
+.statusbar .save-status.saved {
+    color: var(--success);
+}
+
+.statusbar .save-status.saving {
+    color: var(--warning);
+}
+
+.statusbar .save-status.error {
+    color: var(--error);
+}
+
+.statusbar .save-status.typing {
+    color: var(--text-muted);
+}
+
+.statusbar .expiry-countdown {
+    color: var(--warning);
+    font-weight: 600;
+}
+
+.statusbar-spacer {
+    flex: 1;
+}
+
+/* --- Keyboard shortcut hint --- */
+.shortcut-hint {
+    position: relative;
+    display: inline-block;
+}
+
+.shortcut-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 8px;
+    padding: 10px 14px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    z-index: 100;
+}
+
+.shortcut-hint:hover .shortcut-tooltip,
+.shortcut-hint:focus-within .shortcut-tooltip {
+    display: block;
+}
+
+.shortcut-tooltip kbd {
+    display: inline-block;
+    padding: 2px 6px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal h2 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.modal p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    font-family: var(--font-mono);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    outline: none;
+    margin-bottom: 8px;
+    transition: border-color var(--transition);
+}
+
+.modal-input:focus {
+    border-color: var(--accent);
+}
+
+.modal-validation {
+    font-size: 0.82rem;
+    min-height: 1.3em;
+    margin-bottom: 12px;
+}
+
+.modal-validation.error {
+    color: var(--error);
+}
+
+/* ============================================================
+   ERROR / EXPIRED STATES
+   ============================================================ */
+
+.error-container {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 24px;
+    text-align: center;
+}
+
+.error-container .error-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.error-container h1 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.error-container p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.error-container .error-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .landing-container {
+        padding: 40px 16px;
+    }
+
+    .landing-logo {
+        font-size: 2rem;
+    }
+
+    .create-form {
+        flex-direction: column;
+    }
+
+    .topbar {
+        padding: 8px 12px;
+        gap: 8px;
+    }
+
+    .topbar-filename {
+        font-size: 0.85rem;
+    }
+
+    .topbar-actions {
+        gap: 6px;
+    }
+
+    .btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+
+    .editor-textarea {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .statusbar {
+        gap: 10px;
+        font-size: 0.72rem;
+    }
+
+    .action-bar {
+        gap: 6px;
+        padding: 6px 12px;
+    }
+
+    .editor-container {
+        height: calc(100vh - 90px - 72px - 36px);
+    }
+}
+
+@media (max-width: 480px) {
+    .topbar-actions .btn-label {
+        display: none;
+    }
+
+    .statusbar {
+        gap: 8px;
+    }
+}
+
+/* ============================================================
+   PRINT STYLES (hide UI chrome when printing)
+   ============================================================ */
+@media print {
+    .topbar, .statusbar, .action-bar, .editor-notice {
+        display: none;
+    }
+    .editor-container {
+        height: auto;
+    }
+    .editor-textarea {
+        border: none;
+    }
+}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TempPad — Editor</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- ============================================================
+         TOP BAR
+         ============================================================ -->
+    <header class="topbar" role="banner">
+        <a href="/" class="topbar-logo" aria-label="TempPad Home">TempPad</a>
+        <span class="topbar-filename" id="filenameDisplay" aria-label="Current filename">loading...</span>
+        <div class="topbar-spacer"></div>
+        <div class="topbar-actions">
+            <button class="btn" id="newFileBtn" aria-label="New file" title="New file">
+                📄 <span class="btn-label">New</span>
+            </button>
+            <button class="btn" id="copyLinkBtn" aria-label="Copy link" title="Copy shareable link">
+                🔗 <span class="btn-label">Copy Link</span>
+            </button>
+            <div class="shortcut-hint">
+                <button class="btn" id="shortcutsBtn" aria-label="Keyboard shortcuts" title="Keyboard shortcuts">⌨️</button>
+                <div class="shortcut-tooltip" role="tooltip">
+                    <div><kbd>Ctrl</kbd>+<kbd>S</kbd> Save</div>
+                    <div><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> New file</div>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+        </div>
+    </header>
+
+    <!-- ============================================================
+         EDITOR AREA
+         ============================================================ -->
+    <div class="editor-container" id="editorContainer">
+        <!-- Public/temporary notice -->
+        <div class="editor-notice" id="editorNotice" role="alert">
+            ⚠️ This file is public and temporary. Anyone with the link can edit. The latest save wins unless there is a conflict.
+        </div>
+
+        <!-- Main textarea -->
+        <label for="editorTextarea" class="sr-only">File content</label>
+        <textarea
+            id="editorTextarea"
+            class="editor-textarea"
+            spellcheck="false"
+            autocomplete="off"
+            placeholder="Start typing..."
+            aria-label="File content editor"
+        ></textarea>
+
+        <!-- Action bar -->
+        <div class="action-bar">
+            <button class="btn btn-primary" id="saveBtn" aria-label="Save">💾 Save</button>
+            <button class="btn" id="clearBtn" aria-label="Clear content">🗑️ Clear</button>
+            <button class="btn" id="copyTextBtn" aria-label="Copy text">📋 Copy</button>
+            <button class="btn" id="downloadBtn" aria-label="Download as text file">⬇️ Download</button>
+            <div class="action-bar-spacer"></div>
+            <span id="unsavedIndicator" class="statusbar-item" style="color: var(--warning); display: none;" aria-live="polite">● Unsaved changes</span>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         STATUS BAR
+         ============================================================ -->
+    <footer class="statusbar" role="contentinfo">
+        <span class="statusbar-item save-status" id="saveStatus" aria-live="polite">Ready</span>
+        <span class="statusbar-item" id="charCount">0 chars</span>
+        <span class="statusbar-item" id="wordCount">0 words</span>
+        <span class="statusbar-item" id="lineCount">1 line</span>
+        <span class="statusbar-item" id="lastSaved">—</span>
+        <span class="statusbar-spacer"></span>
+        <span class="statusbar-item expiry-countdown" id="expiryCountdown" aria-live="polite">Expires in: —</span>
+    </footer>
+
+    <!-- ============================================================
+         NEW FILE MODAL
+         ============================================================ -->
+    <div class="modal-overlay" id="newFileModal" role="dialog" aria-modal="true" aria-labelledby="newFileTitle">
+        <div class="modal">
+            <h2 id="newFileTitle">Create New File</h2>
+            <p>Choose a name for your new temporary file.</p>
+            <label for="newFileInput" class="sr-only">New filename</label>
+            <input
+                type="text"
+                id="newFileInput"
+                class="modal-input"
+                placeholder="e.g. project-notes"
+                autocomplete="off"
+                maxlength="64"
+            >
+            <div id="newFileValidation" class="modal-validation" aria-live="polite"></div>
+            <div class="modal-actions">
+                <button class="btn" id="newFileCancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="newFileCreateBtn" disabled>Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         CONFLICT RESOLUTION MODAL
+         ============================================================ -->
+    <div class="modal-overlay" id="conflictModal" role="dialog" aria-modal="true" aria-labelledby="conflictTitle">
+        <div class="modal">
+            <h2 id="conflictTitle">⚠️ Save Conflict</h2>
+            <p id="conflictMessage">Someone else saved this file while you were editing. Choose how to resolve:</p>
+            <div class="modal-actions" style="flex-direction: column; align-items: stretch;">
+                <button class="btn" id="conflictLoadBtn">Load latest version (discard my changes)</button>
+                <button class="btn btn-primary" id="conflictOverwriteBtn">Keep my version and overwrite</button>
+                <button class="btn" id="conflictCopyBtn">Copy my text then load latest</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         EXPIRED STATE (shown when the file expires)
+         ============================================================ -->
+    <div id="expiredOverlay" class="modal-overlay" role="alert">
+        <div class="error-container">
+            <div class="error-icon">⏰</div>
+            <h1>This file has expired</h1>
+            <p>The 24-hour window for this file has ended. Its content has been permanently deleted.</p>
+            <div class="error-actions">
+                <button class="btn btn-primary" id="expiredRecreateBtn">Create a new file with this name</button>
+                <a href="/" class="btn">Choose another name</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         ERROR STATE (shown on server/network errors)
+         ============================================================ -->
+    <div id="errorOverlay" class="modal-overlay" role="alert">
+        <div class="error-container">
+            <div class="error-icon" id="errorIcon">❌</div>
+            <h1 id="errorTitle">Something went wrong</h1>
+            <p id="errorMessage">We could not load this file. Please try again.</p>
+            <div class="error-actions">
+                <button class="btn btn-primary" id="errorRetryBtn">Retry</button>
+                <a href="/" class="btn">Go Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/theme.js"></script>
+    <script src="/js/editor.js"></script>
+</body>
+</html>

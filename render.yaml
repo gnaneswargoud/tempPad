@@ -1,0 +1,45 @@
+services:
+  # TempPad Web Service (Express Node.js application)
+  - type: web
+    name: temppad-web
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    preDeployCommand: npm run migrate
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: TRUST_PROXY
+        value: "1"
+      - key: DB_SSL
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: temppad-db
+          property: connectionString
+
+  # Standalone Cron Job for Layer 3 Expiration Cleanup (runs every 5 minutes)
+  - type: cron
+    name: temppad-cleanup-cron
+    env: node
+    plan: free
+    schedule: "*/5 * * * *"
+    buildCommand: npm install
+    startCommand: npm run cleanup
+    envVars:
+      - key: DB_SSL
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: temppad-db
+          property: connectionString
+
+databases:
+  # Managed PostgreSQL instance
+  - name: temppad-db
+    plan: free
+    databaseName: temppad
+    user: temppad_user

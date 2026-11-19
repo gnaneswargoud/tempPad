@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TempPad — Temporary Public Notepad</title>
+    <meta name="description" content="Create a temporary public text file by choosing a name. Files expire after 24 hours.">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Theme is applied before paint by the inline-free theme script -->
+
+    <main class="landing-container" role="main">
+        <div class="landing-logo" aria-label="TempPad">TempPad</div>
+        <p class="landing-tagline">Create a temporary public text file by choosing a name.</p>
+
+        <!-- Create form -->
+        <form class="create-form" id="createForm" aria-label="Create a new file">
+            <label for="filenameInput" class="sr-only">Filename</label>
+            <input
+                type="text"
+                id="filenameInput"
+                class="create-input"
+                placeholder="e.g. meeting-notes"
+                autocomplete="off"
+                autofocus
+                maxlength="64"
+                aria-describedby="validationMsg formatHint"
+            >
+            <button type="submit" class="create-btn" id="createBtn" disabled>Create</button>
+        </form>
+
+        <!-- Validation feedback -->
+        <div id="validationMsg" class="validation-msg" aria-live="polite"></div>
+
+        <!-- Format hint -->
+        <p id="formatHint" class="format-hint">
+            Letters, numbers, hyphens, and underscores only. 1–64 characters. No spaces or dots.
+        </p>
+
+        <!-- Info box -->
+        <div class="info-box">
+            <h3>How it works</h3>
+            <ul>
+                <li>Files are <strong>public</strong> — anyone with the link can read and edit</li>
+                <li>Files expire <strong>24 hours</strong> after creation — the timer never resets</li>
+                <li>Content is <strong>temporary</strong> — it will be permanently deleted</li>
+                <li><strong>Do not</strong> store passwords, keys, or sensitive data</li>
+                <li>Anyone with the link can edit — the latest save wins</li>
+            </ul>
+        </div>
+
+        <!-- Theme toggle (bottom-right corner) -->
+        <div style="position: fixed; bottom: 16px; right: 16px;">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+        </div>
+    </main>
+
+    <script src="/js/theme.js"></script>
+    <script src="/js/landing.js"></script>
+</body>
+</html>
