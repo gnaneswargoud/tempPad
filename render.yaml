@@ -1,7 +1,7 @@
 services:
   # TempPad Web Service (Express Node.js application)
   - type: web
-    name: temppad-web
+    name: Notepad
     env: node
     plan: free
     buildCommand: npm install
